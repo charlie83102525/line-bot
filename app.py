@@ -13,6 +13,11 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, StickerSendMessage
 )
 
+import twstock
+import time
+import requests
+
+
 app = Flask(__name__)
 
 line_bot_api = LineBotApi('pd+ozecWVTmcbqNeKmPNFf5JtkkhmJo4ELm2NT7d+0kR0nHDLndzIhp0H6Xh2/19TZCNdEydWH0rNOstXXv6+nuqa1g8OByP6EmGVbLYGsD3GC1Sus36DRfh1agyjZy5reufPMown4Cqiv/YBU9PRQdB04t89/1O/w1cDnyilFU=')
@@ -40,8 +45,13 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    msg = event.message.text
-    r = '我看不懂你說什麼'
+    #msg = event.message.text
+    stocknumber = event.message.text
+    #r = '我看不懂你說什麼'
+    realdata = twstock.realtime.get(stocknumber)
+    realprice = realprice['realtime']['latest_trade_price']
+    message = f'{stocknumber}目前股價:{realdata}'
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
 
     if '給我貼圖' in msg:
         sticker_message = StickerSendMessage(
@@ -54,6 +64,9 @@ def handle_message(event):
         sticker_message) 
 
         return
+
+    
+
 
     if msg in ['hi', 'Hi']:
         r = 'hi'
