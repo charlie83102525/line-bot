@@ -13,9 +13,6 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, StickerSendMessage
 )
 
-import twstock
-import time
-import requests
 
 
 app = Flask(__name__)
@@ -45,13 +42,8 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    #msg = event.message.text
-    stocknumber = event.message.text
-    #r = '我看不懂你說什麼'
-    realdata = twstock.realtime.get(stocknumber)
-    realprice = realprice['realtime']['latest_trade_price']
-    message = f'{stocknumber}目前股價:{realdata}'
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=message))
+    msg = event.message.text
+    r = '我看不懂你說什麼'
 
     if '給我貼圖' in msg:
         sticker_message = StickerSendMessage(
@@ -66,7 +58,6 @@ def handle_message(event):
         return
 
     
-
 
     if msg in ['hi', 'Hi']:
         r = 'hi'
